@@ -1,0 +1,41 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.21005.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CrmLibrary", "CrmLibrary\CrmLibrary.csproj", "{07C24B91-5C54-4AD2-8E0C-81BB11865BF5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CrmLibrary.Test", "CrmLibrary.Test\CrmLibrary.Test.csproj", "{0053E3CF-3A26-40CE-855D-A502FF7F0D2A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "packages", "packages", "{8FC0DB09-CB1D-482E-B981-E26FFD757EB3}"
+	ProjectSection(SolutionItems) = preProject
+		packages\Microsoft.Crm.Sdk.Proxy.dll = packages\Microsoft.Crm.Sdk.Proxy.dll
+		packages\Microsoft.Xrm.Client.dll = packages\Microsoft.Xrm.Client.dll
+		packages\Microsoft.Xrm.Sdk.dll = packages\Microsoft.Xrm.Sdk.dll
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommonUtility", "CommonUtility\CommonUtility.csproj", "{2A5098A1-F770-4ECB-A98C-DF3732281274}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{07C24B91-5C54-4AD2-8E0C-81BB11865BF5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{07C24B91-5C54-4AD2-8E0C-81BB11865BF5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{07C24B91-5C54-4AD2-8E0C-81BB11865BF5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{07C24B91-5C54-4AD2-8E0C-81BB11865BF5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0053E3CF-3A26-40CE-855D-A502FF7F0D2A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0053E3CF-3A26-40CE-855D-A502FF7F0D2A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0053E3CF-3A26-40CE-855D-A502FF7F0D2A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0053E3CF-3A26-40CE-855D-A502FF7F0D2A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2A5098A1-F770-4ECB-A98C-DF3732281274}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2A5098A1-F770-4ECB-A98C-DF3732281274}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2A5098A1-F770-4ECB-A98C-DF3732281274}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2A5098A1-F770-4ECB-A98C-DF3732281274}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
