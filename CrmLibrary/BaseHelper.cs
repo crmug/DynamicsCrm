@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Xrm.Sdk;
 
 namespace CrmLibrary
@@ -18,6 +14,18 @@ namespace CrmLibrary
                 return _service;
             }
             set { _service = value; }
+        }
+
+        public OrganizationResponse Execute(OrganizationRequest request)
+        {
+            try
+            {
+                return Service.Execute(request);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
     }
 }

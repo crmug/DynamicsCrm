@@ -36,7 +36,8 @@ namespace CrmLibrary
         #region 字段
 
         private IOrganizationService _service;
-        private string _connectionString = @"Url=https://azdmsabm07.azureabdms.local/XRMServices/2011/Organization.svc; Username=azureabdms\speng;Password=ZAQ!2wsx;";
+        //private string _connectionString = @"Url=https://azdmsabm07.azureabdms.local/XRMServices/2011/Organization.svc; Username=azureabdms\speng;Password=ZAQ!2wsx;";
+        private string _connectionString = @"Url=http://192.168.137.138:5555/CrmOrg/XRMServices/2011/Organization.svc; Username=mscrm\administrator;Password=Passw0rd;";
 
         #endregion
 
@@ -82,6 +83,8 @@ namespace CrmLibrary
             _service = new OrganizationService(connection);
             return _service;
         }
+
+
 
         #endregion 
     }

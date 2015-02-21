@@ -1,7 +1,7 @@
-﻿using System.Collections;
+﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
+using CrmLibrary.Metadata;
 using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Messages;
 using Microsoft.Xrm.Sdk.Metadata;
@@ -10,10 +10,11 @@ namespace CrmLibrary
 {
     public class FieldMetadataHelper : BaseHelper
     {
-        #region Create Fields
+
+        #region 示例方法
 
         /// <summary>
-        /// 创建示例Field
+        /// 创建示例字段
         /// </summary>
         /// <param name="entityName">Entity的LogicalName</param>
         /// <param name="schemName">Field的SchemName</param>
@@ -38,10 +39,118 @@ namespace CrmLibrary
             return Service.Execute(request);
         }
 
+        #endregion 
+
+        #region 通用的CRM字段创建方法
+
+        /// <summary>
+        /// 创建字段
+        /// </summary>
+        public OrganizationResponse CreateField(FieldMetadata fieldMetadata)
+        {
+
+            OrganizationResponse response = null;
+            switch (fieldMetadata.FieldType)
+            {
+                case FieldType.SingleLineOfText:
+                    response = CreateSingleLineOfTextField(
+                        fieldMetadata.EntityName,
+                        fieldMetadata.SchemName,
+                        fieldMetadata.DisplayName,
+                        fieldMetadata.Description,
+                        fieldMetadata.MaxLength,
+                        fieldMetadata.RequiredLevel);
+                    break;
+                case FieldType.MultipleLinesOfText:
+                    response = CreateMultipleLinesOfTextField(
+                        fieldMetadata.EntityName,
+                        fieldMetadata.SchemName,
+                        fieldMetadata.DisplayName,
+                        fieldMetadata.Description,
+                        fieldMetadata.MaxLength,
+                        fieldMetadata.RequiredLevel);
+                    break;
+                case FieldType.DateTime:
+                    response = CreateDateTimeField(
+                        fieldMetadata.EntityName,
+                        fieldMetadata.SchemName,
+                        fieldMetadata.DisplayName,
+                        fieldMetadata.Description,
+                        fieldMetadata.RequiredLevel);
+                    break;
+                case FieldType.WholeNumber:
+                    response = CreateWholeNumberField(
+                        fieldMetadata.EntityName,
+                        fieldMetadata.SchemName,
+                        fieldMetadata.DisplayName,
+                        fieldMetadata.Description,
+                        fieldMetadata.MinValue,
+                        fieldMetadata.MaxValue,
+                        fieldMetadata.RequiredLevel);
+                    break;
+                case FieldType.FloatingPointNumber:
+                    response = CreateFloatingPointNumberField(
+                        fieldMetadata.EntityName,
+                        fieldMetadata.SchemName,
+                        fieldMetadata.DisplayName,
+                        fieldMetadata.Description,
+                        fieldMetadata.MinValue,
+                        fieldMetadata.MaxValue,
+                        fieldMetadata.RequiredLevel);
+                    break;
+                case FieldType.Decimal:
+                    response = CreateDecimalField(
+                        fieldMetadata.EntityName,
+                        fieldMetadata.SchemName,
+                        fieldMetadata.DisplayName,
+                        fieldMetadata.Description,
+                        fieldMetadata.Precision,
+                        fieldMetadata.RequiredLevel);
+                    break;
+                case FieldType.TwoOptions:
+                    response = CreateTwoOptionsField(
+                        fieldMetadata.EntityName,
+                        fieldMetadata.SchemName,
+                        fieldMetadata.DisplayName,
+                        fieldMetadata.Description,
+                        fieldMetadata.Options,
+                        fieldMetadata.RequiredLevel);
+                    break;
+                case FieldType.OptionSet:
+                    response = CreateOptionSetField(
+                        fieldMetadata.EntityName,
+                        fieldMetadata.SchemName,
+                        fieldMetadata.DisplayName,
+                        fieldMetadata.Description,
+                        fieldMetadata.Options,
+                        fieldMetadata.IsGlobal,
+                        fieldMetadata.RequiredLevel);
+                    break;
+                case FieldType.Lookup:
+                    response = CreateLookupField(
+                        fieldMetadata.EntityName,
+                        fieldMetadata.SchemName,
+                        fieldMetadata.DisplayName,
+                        fieldMetadata.Description,
+                        fieldMetadata.ReferencedEntityName,
+                        fieldMetadata.ReferencedAttributeName,
+                        fieldMetadata.RelationshipSchemName,
+                        fieldMetadata.RequiredLevel);
+                    break;
+
+            }
+            return response;
+        }
+
+
+        #endregion 
+
+        #region 各类型的CRM字段创建方法
+
         /// <summary>
         /// 创建Single Line of Text字段
         /// </summary>
-        public OrganizationResponse CreateSingleLienOfTextField(
+        public OrganizationResponse CreateSingleLineOfTextField(
             string entityName,
             string schemName,
             string displayName,
@@ -175,6 +284,33 @@ namespace CrmLibrary
         }
 
         /// <summary>
+        /// 创建DateTime字段
+        /// </summary>
+        public OrganizationResponse CreateDateTimeField(
+            string entityName,
+            string schemName,
+            string displayName,
+            string decription,
+            AttributeRequiredLevel requiredLevel)
+        {
+            var request = new CreateAttributeRequest
+            {
+                EntityName = entityName,
+                Attribute = new DateTimeAttributeMetadata()
+                {
+                    SchemaName = schemName,
+                    RequiredLevel = new AttributeRequiredLevelManagedProperty(requiredLevel),
+                    DisplayName = new Label(displayName, 1033),
+                    Description = new Label(decription, 1033),
+                    // Set extended properties
+                    Format = DateTimeFormat.DateOnly,
+                    ImeMode = ImeMode.Disabled
+                }
+            };
+            return Service.Execute(request);
+        } 
+
+        /// <summary>
         /// 创建Two Options字段
         /// </summary>
         public OrganizationResponse CreateTwoOptionsField(
@@ -182,12 +318,15 @@ namespace CrmLibrary
             string schemName,
             string displayName,
             string decription,
-            string trueLabel,
-            int trueValue,
-            string falseLabel,
-            int falseValue,
+            IDictionary<string, int> options,
             AttributeRequiredLevel requiredLevel)
         {
+
+            if (options.Count != 2)
+            {
+                throw new ArgumentException("The options argument should have two options");
+            }
+            OptionMetadataCollection collection = GetOptionMetadataCollection(options);
             var request = new CreateAttributeRequest
             {
                 EntityName = entityName,
@@ -198,15 +337,9 @@ namespace CrmLibrary
                     DisplayName = new Label(displayName, 1033),
                     Description = new Label(decription, 1033),
                     OptionSet = new BooleanOptionSetMetadata(
-                        new OptionMetadata
-                        {
-                            Label = new Label(trueLabel, 1033),
-                            Value = trueValue
-                        }, new OptionMetadata
-                        {
-                            Label = new Label(falseLabel, 1033),
-                            Value = falseValue
-                        })
+                        collection[0],  // true option
+                        collection[1]   // false option
+                    )
                 }
             };
             return Service.Execute(request);
@@ -221,9 +354,11 @@ namespace CrmLibrary
             string displayName,
             string decription,
             IDictionary<string,int> options,
+            bool isGlobal,
             AttributeRequiredLevel requiredLevel)
         {
             OptionMetadataCollection collection = GetOptionMetadataCollection(options);
+
             var request = new CreateAttributeRequest
             {
                 EntityName = entityName,
@@ -234,6 +369,52 @@ namespace CrmLibrary
                     DisplayName = new Label(displayName, 1033),
                     Description = new Label(decription, 1033),
                     OptionSet = new OptionSetMetadata(collection)
+                    {
+                        IsGlobal = isGlobal
+                    }
+                }
+            };
+            return Service.Execute(request);
+        }
+
+        /// <summary>
+        /// 创建Lookup字段
+        /// </summary>
+        public OrganizationResponse CreateLookupField(
+            string entityName,
+            string schemName,
+            string displayName,
+            string decription,
+            string referencedEntityName,
+            string referencedAttributeName,
+            string relationshipSchemName,
+            AttributeRequiredLevel requiredLevel)
+        {
+            CreateOneToManyRequest request = new CreateOneToManyRequest()
+            {
+                Lookup = new LookupAttributeMetadata()
+                {
+                    Description = new Label(decription, 1033),
+                    DisplayName = new Label(displayName, 1033),
+                    SchemaName = schemName,
+                    RequiredLevel =
+                        new AttributeRequiredLevelManagedProperty(AttributeRequiredLevel.ApplicationRequired)
+                },
+                OneToManyRelationship = new OneToManyRelationshipMetadata()
+                {
+                    CascadeConfiguration = new CascadeConfiguration()
+                    {
+                        Assign = CascadeType.Cascade,
+                        Delete = CascadeType.Cascade,
+                        Merge = CascadeType.Cascade,
+                        Reparent = CascadeType.Cascade,
+                        Share = CascadeType.Cascade,
+                        Unshare = CascadeType.Cascade
+                    },
+                    ReferencedEntity = referencedEntityName,
+                    ReferencedAttribute = referencedAttributeName,
+                    ReferencingEntity = entityName,
+                    SchemaName = relationshipSchemName
                 }
             };
             return Service.Execute(request);
@@ -241,14 +422,11 @@ namespace CrmLibrary
 
         #endregion
 
-
         #region 私有方法
 
         /// <summary>
-        /// 获取
+        /// 获取OptionMetadataCollection
         /// </summary>
-        /// <param name="options"></param>
-        /// <returns></returns>
         private OptionMetadataCollection GetOptionMetadataCollection(IDictionary<string, int> options)
         {
             IList<OptionMetadata> list = options.Select(opt => new OptionMetadata()

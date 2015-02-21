@@ -46,11 +46,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AttributeHelper.cs" />
+    <Compile Include="FieldHelper.cs" />
     <Compile Include="BaseHelper.cs" />
     <Compile Include="CrmServiceHelper.cs" />
     <Compile Include="FieldMetadataHelper.cs" />
-    <Compile Include="Metadata\AttributeMetadata.cs" />
+    <Compile Include="Metadata\FieldMetadata.cs" />
     <Compile Include="RecordHelper.cs" />
     <Compile Include="EntityMetadataHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
